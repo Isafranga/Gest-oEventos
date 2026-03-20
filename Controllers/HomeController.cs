@@ -1,14 +1,33 @@
 using System.Diagnostics;
+using GestãoEventos.Data;
 using GestãoEventos.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestãoEventos.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var hoje = DateTime.Now.Date;
+
+            var eventos = await _context.Eventos
+                .Include(e => e.Categoria)
+                .Include(e => e.Local)
+                .Where(e => e.Data >= hoje)
+                .OrderBy(e => e.Data)
+                .ToListAsync();
+
+            return View(eventos);
+
         }
 
         public IActionResult Privacy()

@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GestãoEventos.Data;
+using GestãoEventos.Data;
+using GestãoEventos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GestãoEventos.Data;
-using GestãoEventos.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace GestãoEventos.Controllers
+namespace Gestao.Controllers
 {
     public class LocalController : Controller
-
     {
         private readonly ApplicationDbContext _context;
 
@@ -20,13 +21,14 @@ namespace GestãoEventos.Controllers
             _context = context;
         }
 
-        // GET: Local
+        // GET: Locals
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Locais.ToListAsync());
         }
 
-        // GET: Local/Details/5
+        // GET: Locals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,17 +46,21 @@ namespace GestãoEventos.Controllers
             return View(local);
         }
 
-        // GET: Local/Create
+        [Authorize(Roles = "Admin")]
+        // GET: Locals/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Local/Create
+        // POST: Locals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Create([Bind("Id,Nome,Capacidade")] Local local)
         {
             if (ModelState.IsValid)
@@ -66,7 +72,7 @@ namespace GestãoEventos.Controllers
             return View(local);
         }
 
-        // GET: Local/Edit/5
+        // GET: Locals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,11 +88,13 @@ namespace GestãoEventos.Controllers
             return View(local);
         }
 
-        // POST: Local/Edit/5
+        // POST: Locals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Capacidade")] Local local)
         {
             if (id != local.Id)
@@ -117,7 +125,8 @@ namespace GestãoEventos.Controllers
             return View(local);
         }
 
-        // GET: Local/Delete/5
+        // GET: Locals/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,9 +144,11 @@ namespace GestãoEventos.Controllers
             return View(local);
         }
 
-        // POST: Local/Delete/5
+        // POST: Locals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var local = await _context.Locais.FindAsync(id);

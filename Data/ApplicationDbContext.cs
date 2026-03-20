@@ -14,5 +14,7 @@ public class ApplicationDbContext: IdentityDbContext
 
     public DbSet<Categoria> Categorias { get; set; }
 
-    public DbSet<Local> Locais { get; set; }
+    public DbSet<Local> Locais { get; set;}
+
+    public DbSet<Evento> Eventos { get; set; }
 }
